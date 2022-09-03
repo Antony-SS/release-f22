@@ -92,10 +92,13 @@ TEST_CASE("Image rotateColor(double) keeps the hue in the range 0..360", "[weigh
   
   Image result = createRainbowImage();
   result.rotateColor(90);
+
+  // std::cout << "Hue before rotation: " << img.getPixel(340, 90) << std::endl;
   REQUIRE( result.getPixel(340, 90).h == 70 );
 
+  // std::cout << "Hue before rotation: " << result.getPixel(10, 90) << std::endl;
   result.rotateColor(-180);
-  REQUIRE( result.getPixel(10, 90).h == 280 );
+  REQUIRE( result.getPixel(10, 90).h == 280);
 }
 
 
@@ -126,6 +129,7 @@ TEST_CASE("Image scale(2) scales pixel data in a reasonable way", "[weight=1][pa
   Image result = createRainbowImage();
   result.scale(2);
 
+
   REQUIRE( result.getPixel(100, 100).h > 40 );
   REQUIRE( result.getPixel(100, 100).h < 60 );
 }
@@ -136,6 +140,18 @@ TEST_CASE("Image scale(0.5) scales pixel data in a reasonable way", "[weight=1][
   Image result = createRainbowImage();
   result.scale(0.5);
 
+  REQUIRE( result.getPixel(100, 20).h > 180 );
+  REQUIRE( result.getPixel(100, 20).h < 220 );
+}
+
+TEST_CASE("Image works for manual scaling", "[weight=1][part=1]") {
+  Image img = createRainbowImage();
+  
+  Image result = createRainbowImage();
+  result.scale(600, 900);
+
+  img.writeToFile("../scalerainboworiginal.png");
+  result.writeToFile("../scalerainbowresult.png");
   REQUIRE( result.getPixel(100, 20).h > 180 );
   REQUIRE( result.getPixel(100, 20).h < 220 );
 }

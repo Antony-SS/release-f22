@@ -4,7 +4,6 @@
 
 int main() {
   Image alma;
-
   std::cout << "Using Image::lighten to create `lighten.png`..." << std::endl;
   alma.readFromFile("../alma.png");
   alma.lighten(0.2);
