@@ -148,8 +148,8 @@ TEST_CASE("Image works for manual scaling", "[weight=1][part=1]") {
   Image img = createRainbowImage();
   
   Image result = createRainbowImage();
-  result.scale(600, 900);
-
+  result.scale(10000, 900);
+  // this test case will fail b/c I changed the scaling inputs so the requires don't work
   img.writeToFile("../scalerainboworiginal.png");
   result.writeToFile("../scalerainbowresult.png");
   REQUIRE( result.getPixel(100, 20).h > 180 );

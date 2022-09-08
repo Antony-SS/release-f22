@@ -21,8 +21,10 @@ TEST_CASE("A basic StickerSheet works", "[weight=5][part=2][timeout=30000][valgr
   Image alma; alma.readFromFile("../tests/alma.png");
   Image i;    i.readFromFile("../tests/i.png");
 
+  std::cout << "Failing1" << std::endl;
   StickerSheet sheet(alma, 5);
   sheet.addSticker(i, 20, 200);
+  std::cout << "Failing2" << std::endl;
 
   Image expected;
   expected.readFromFile("../tests/expected.png");
