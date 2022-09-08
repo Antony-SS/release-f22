@@ -19,6 +19,10 @@ Room::Room(const std::string& init_name, int init_capacity)
       letterCount(0)
 {
     letters = new Letter[max_letters];
+    // think you might have to initialize each letter
+    // for (unsigned i = 0; i < max_letters; i++) {
+    //     letters[i] = Letter();
+    //}
 }
 
 Room::Room(const Room& other)
@@ -61,8 +65,9 @@ void Room::print(std::ostream & stream /* = std::cout */)
 
 void Room::clear()
 {
+    // look into this
     if (letters != NULL)
-        delete letters;
+        delete[] letters;
 }
 
 void Room::copy(const Room& other)
@@ -71,6 +76,9 @@ void Room::copy(const Room& other)
     capacity = other.capacity;
     count = other.count;
     letterCount = other.letterCount;
-    letters = other.letters;
-
+    letters = new Letter[max_letters];
+    for (int i = 0; i < other.letterCount; i++) {
+        // might not need the if statement
+        letters[i] = other.letters[i];
+    }
 }
