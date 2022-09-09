@@ -60,6 +60,9 @@ TEST_CASE("StickerSheet::changeMaxStickers() does not discard original stickers 
   Image expected;
   expected.readFromFile("../tests/expected.png");
 
+  Image outPut1 = sheet.render();
+  outPut1.writeToFile("../Output1.png");
+
   REQUIRE( sheet.render() == expected );
 }
 
@@ -70,8 +73,13 @@ TEST_CASE("StickerSheet::changeMaxStickers() can increase the number of stickers
   StickerSheet sheet(alma, 1);
   sheet.addSticker(i, 20, 200);
 
+
   sheet.changeMaxStickers(2);
   sheet.addSticker(i, 40, 200);
+
+  Image outPut2 = sheet.render();
+  outPut2.writeToFile("../Output2.png");
+
 
   Image expected;
   expected.readFromFile("../tests/expected-2.png");
@@ -246,7 +254,7 @@ TEST_CASE("StickerSheet's copy constructor makes an independent copy", "[weight=
   StickerSheet s2(s1);
   s2.removeSticker(1);
 
-  REQUIRE( s1.render() == expected2 );
+  REQUIRE( s1.render() == expected2);
   REQUIRE( s2.render() == expected );
 }
 
@@ -289,10 +297,15 @@ TEST_CASE("A Stickersheet with stickers placed beyond base image boundaries work
     StickerSheet sheetDuplicate(almaDuplicate, 5);
     sheet = sheetDuplicate;
   }
-
+  Image output3 = sheet.render();
+  output3.writeToFile("../Outputline301.png");
   sheet.addSticker(i, 800, 200);
-  sheet.addSticker(i, 50, 500);
 
+  output3 = sheet.render();
+  output3.writeToFile("../Outputline305.png");
+  sheet.addSticker(i, 50, 500);
+  output3 = sheet.render();
+  output3.writeToFile("../Outputline308.png");
   sheet.changeMaxStickers(7);
   sheet.removeSticker(1);
   sheet.changeMaxStickers(4);
@@ -305,6 +318,9 @@ TEST_CASE("A Stickersheet with stickers placed beyond base image boundaries work
   checkStickerPlacement(i, renderXBound, 800, 200);
 
   sheet.removeSticker(0);
+
+  output3 = sheet.render();
+  output3.writeToFile("../Outputline315.png");
 
   REQUIRE( sheet.render() == alma );
 

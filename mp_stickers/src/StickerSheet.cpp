@@ -66,31 +66,36 @@ int StickerSheet::addSticker (Image &sticker, unsigned x, unsigned y) {
     } else {
         stickers.push_back(&sticker);
         std::pair<unsigned, unsigned> tmp (x,y);
-        coordinates.insert({&sticker, tmp});
+        coordinates.push_back(tmp);
         return stickers.size() - 1;
     }
 }
 
 bool StickerSheet::translate (unsigned index, unsigned x, unsigned y) {
-    if (index > stickers.size() - 1) {
+    if (index > stickers.size() - 1 || index < 0) {
         return false;
     } else {
         Image* toEdit = stickers[index];
-        coordinates[toEdit].first = x;
-        coordinates[toEdit].second = y;
+        coordinates[index].first = x;
+        coordinates[index].second = y;
         return true;
     }
 }
 
 void StickerSheet::removeSticker (unsigned index) {
-    delete stickers[index];
-    coordinates.erase(stickers[index]);
+    // delete stickers[index];
+    // coordinates.erase(stickers[index]);
     std::vector<Image*>::const_iterator iterator = stickers.begin();
+    std::vector<std::pair<unsigned, unsigned>>::const_iterator iterator2 = coordinates.begin();
 
+    coordinates.erase(iterator2 + index);
     stickers.erase(iterator + index);
 }
 
 Image* StickerSheet::getSticker (unsigned index) {
+    if (index < 0 || index >= stickers.size()) {
+        return NULL;
+    }
     return stickers[index];
 }
 
@@ -100,8 +105,8 @@ Image StickerSheet::render () const {
     for (unsigned i = 0; i < stickers.size(); i++) {
         // for each sticker I have to set up starting coordinates
         Image* toAdd = stickers[i];
-        unsigned startingX = coordinates.at(toAdd).first;
-        unsigned startingY = coordinates.at(toAdd).second;
+        unsigned startingX = coordinates.at(i).first;
+        unsigned startingY = coordinates.at(i).second;
 
         // will have to check this, idea is to resize if any sticker will extend past the boundary
         if (startingX + toAdd->width() > toReturn.width()) {
@@ -138,7 +143,7 @@ std::vector<Image*> StickerSheet::getStickers() const {
     return stickers;
 }
 
-std::map<Image*, std::pair<unsigned, unsigned>> StickerSheet::getCoordinates() const {
+std::vector<std::pair<unsigned, unsigned>> StickerSheet::getCoordinates() const {
     return coordinates;
 }
 

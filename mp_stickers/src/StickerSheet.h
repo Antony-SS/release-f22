@@ -35,13 +35,16 @@ class StickerSheet {
 
     unsigned getMaxStickers() const;
 
-    std::map<Image*, std::pair<unsigned, unsigned>> getCoordinates() const;
+    // std::map<Image*, std::pair<unsigned, unsigned>> getCoordinates() const;
+
+    std::vector<std::pair<unsigned, unsigned>> getCoordinates() const;
 
     Image render () const;
 
     private:
     std::vector<Image*> stickers;
-    std::map<Image*, std::pair<unsigned, unsigned>> coordinates;
+    // std::map<Image*, std::pair<unsigned, unsigned>> coordinates;
+    std::vector<std::pair<unsigned, unsigned>> coordinates;
     unsigned maxStickers;
     const Image* baseLayer;
 
