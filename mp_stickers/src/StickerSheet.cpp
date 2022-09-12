@@ -16,23 +16,31 @@ void StickerSheet::_copy(const StickerSheet& other) {
     while (stickers.size() > 0) {
         removeSticker(0);
     }
+    
+    if (baseLayer != nullptr) {
+        delete baseLayer;
+    }
 
-    const Image& tmp = *(other.getBaseLayer());
-    baseLayer = &tmp;
+    // const Image& tmp = *(other.getBaseLayer());
+    // baseLayer = &tmp;
+    baseLayer = new Image(*(other.getBaseLayer()));
     stickers = other.getStickers();
     maxStickers = other.getMaxStickers();
     coordinates = other.getCoordinates();
 }
 
-StickerSheet::StickerSheet (const Image &picture, unsigned max): maxStickers(max), baseLayer(&picture) {}
+StickerSheet::StickerSheet (const Image &picture, unsigned max): maxStickers(max) {
+    baseLayer = new Image(picture);
+}
 
-StickerSheet::StickerSheet (const StickerSheet &other) {
+StickerSheet::StickerSheet (const StickerSheet &other): baseLayer(nullptr) {
     // setting two images equal to eachother with the copy constructor in PNG, 
     // should only be using shallow copy here and never be using references or pointers because I want this to be an independent copy
+
     _copy(other);
 }
 
-const StickerSheet & StickerSheet::operator= (const StickerSheet& other) {
+const StickerSheet& StickerSheet::operator= (const StickerSheet& other) {
     if (this != &other) {_copy(other); }
     return *this;
 }
@@ -43,10 +51,13 @@ StickerSheet::~StickerSheet () {
     // let's start by deleting the stickers in the vector ... the vector can deallocate itself
     // I never call new, I don't think I have to do anything . . . 
     // I was wrong . . . 
+    if (baseLayer != nullptr) {
+        delete baseLayer;
+    }
+
     while (stickers.size() > 0) {
         removeSticker(0);
     }
-
 }
 
 void StickerSheet::changeMaxStickers (unsigned max) {
@@ -75,7 +86,6 @@ bool StickerSheet::translate (unsigned index, unsigned x, unsigned y) {
     if (index > stickers.size() - 1 || index < 0) {
         return false;
     } else {
-        Image* toEdit = stickers[index];
         coordinates[index].first = x;
         coordinates[index].second = y;
         return true;
@@ -101,25 +111,35 @@ Image* StickerSheet::getSticker (unsigned index) {
 
 Image StickerSheet::render () const {
     // creating base layer
-    Image toReturn = *baseLayer;
+    Image toReturn(*baseLayer);
+    unsigned maxWidth = toReturn.width();
+    unsigned maxHeight = toReturn.height();
     for (unsigned i = 0; i < stickers.size(); i++) {
         // for each sticker I have to set up starting coordinates
         Image* toAdd = stickers[i];
         unsigned startingX = coordinates.at(i).first;
         unsigned startingY = coordinates.at(i).second;
 
+        
+
         // will have to check this, idea is to resize if any sticker will extend past the boundary
-        if (startingX + toAdd->width() > toReturn.width()) {
-            if (startingY + toAdd->height() > toReturn.height()) {
-                toReturn.resize(startingX + toAdd->width(), startingY + toAdd->height());
-            } else {
-                toReturn.resize(startingX + toAdd->width(), toReturn.height());
-            }
-        } else if (startingY + toAdd->height() > toReturn.height()) {
-            toReturn.resize(toReturn.width(), startingY + toAdd->height());
+        if (startingX + toAdd->width() > maxWidth) {
+            maxWidth = startingX + toAdd->width();
         }
 
+        if (startingY + toAdd->height() > maxHeight) {
+            maxHeight = startingY + toAdd->height();
+        }
+    }
+
+    toReturn.resize(maxWidth, maxHeight);
+
+
+    for (unsigned i = 0; i < stickers.size(); i++) {
         // iterate over each pixel in sticker and add it to image toReturn if alpha > 0
+        Image* toAdd = stickers[i];
+        unsigned startingX = coordinates.at(i).first;
+        unsigned startingY = coordinates.at(i).second;
         for (unsigned x = 0; x < toAdd->width(); x++) {
             for (unsigned y = 0; y < toAdd->height(); y++) {
                 HSLAPixel& pixelToAdd = toAdd->getPixel(x,y);

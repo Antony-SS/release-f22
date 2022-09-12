@@ -149,25 +149,27 @@ void Image::scale(double factor) {
       for (unsigned y = 0; y < newHeight; y++) {
         if ((unsigned int) originalcoordinatex < original.width() && (unsigned int) originalcoordinatey < original.height()) {
 
-          const HSLAPixel oldPixel = original.getPixel(originalcoordinatex, originalcoordinatey);
+          const HSLAPixel oldPixel = original.getPixel(x * inversefactor, y * inversefactor);
           HSLAPixel & newPixel = this->getPixel(x, y);
           newPixel = oldPixel;
-          originalcoordinatey += inversefactor;
+        //   originalcoordinatey += inversefactor;
         }
       }
-      originalcoordinatey = 0;
-      originalcoordinatex += inversefactor;
+    //   originalcoordinatey = 0;
+    //   originalcoordinatex += inversefactor;
     }
 }
 
-void Image::scale(unsigned w, unsigned h) {
-    double scalefactorwidth = w / width();
-    double scalefactorheight = h / height();
-    if (scalefactorwidth <= scalefactorheight) {
-        scale(scalefactorwidth);
-    } else {
-        scale(scalefactorheight);
-    }
-}
+  void Image::scale (unsigned w, unsigned h){
+    std::cout << "Passed in: " << w << "---" << h << std::endl;
+    double finalWidth = ((double)w) / width();
+    double finalHeight = ((double)h) / height();
+    std::cout << "Orginal width, height: " << width() << "---" << height() << std::endl;
+    std::cout << finalWidth << " ---- " << finalHeight << std::endl;
+    if (finalWidth < finalHeight)
+      scale(finalWidth);
+    else scale(finalHeight);
+  }
+
 
 

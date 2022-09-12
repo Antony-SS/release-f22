@@ -148,10 +148,12 @@ TEST_CASE("Image works for manual scaling", "[weight=1][part=1]") {
   Image img = createRainbowImage();
   
   Image result = createRainbowImage();
-  result.scale(10000, 900);
+  result.scale(240, 50);
   // this test case will fail b/c I changed the scaling inputs so the requires don't work
   img.writeToFile("../scalerainboworiginal.png");
   result.writeToFile("../scalerainbowresult.png");
+
+  std::cout << "returned w,h: " << result.width() << "---" << result.height() << std::endl;
   REQUIRE( result.getPixel(100, 20).h > 180 );
   REQUIRE( result.getPixel(100, 20).h < 220 );
 }

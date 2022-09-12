@@ -21,10 +21,10 @@ TEST_CASE("A basic StickerSheet works", "[weight=5][part=2][timeout=30000][valgr
   Image alma; alma.readFromFile("../tests/alma.png");
   Image i;    i.readFromFile("../tests/i.png");
 
-  std::cout << "Failing1" << std::endl;
   StickerSheet sheet(alma, 5);
+
   sheet.addSticker(i, 20, 200);
-  std::cout << "Failing2" << std::endl;
+  
 
   Image expected;
   expected.readFromFile("../tests/expected.png");
@@ -60,8 +60,8 @@ TEST_CASE("StickerSheet::changeMaxStickers() does not discard original stickers 
   Image expected;
   expected.readFromFile("../tests/expected.png");
 
-  Image outPut1 = sheet.render();
-  outPut1.writeToFile("../Output1.png");
+  // Image outPut1 = sheet.render();
+  // outPut1.writeToFile("../Output1.png");
 
   REQUIRE( sheet.render() == expected );
 }
@@ -77,8 +77,8 @@ TEST_CASE("StickerSheet::changeMaxStickers() can increase the number of stickers
   sheet.changeMaxStickers(2);
   sheet.addSticker(i, 40, 200);
 
-  Image outPut2 = sheet.render();
-  outPut2.writeToFile("../Output2.png");
+  // Image outPut2 = sheet.render();
+  // outPut2.writeToFile("../Output2.png");
 
 
   Image expected;
@@ -286,26 +286,38 @@ TEST_CASE("A Stickersheet with stickers placed beyond base image boundaries work
 
   StickerSheet sheet(alma, 5);
 
+  //Image output3 = sheet.render();
+  //output3.writeToFile("../Outputline290.png");
   /**
    * For testing deep copy of base image
    * The {...} are used for a block statement
    * and are intentional
    */
+
+   std::cout << "HERE at line 297" << std::endl;
   {
     Image almaDuplicate = alma;
 
+    // almaDuplicate.writeToFile("../almaduplicate.png");
+
     StickerSheet sheetDuplicate(almaDuplicate, 5);
+
+    // sheetDuplicate.render().writeToFile("../sheetduplicate.png");
+
     sheet = sheetDuplicate;
+    // sheet.render().writeToFile("../testingsheetaftersheetduplicate.png");
   }
-  Image output3 = sheet.render();
-  output3.writeToFile("../Outputline301.png");
+
+
+  // sheet.render().writeToFile("../at309.png");
   sheet.addSticker(i, 800, 200);
 
-  output3 = sheet.render();
-  output3.writeToFile("../Outputline305.png");
+  // output3 = sheet.render();
+  // output3.writeToFile("../Outputline305.png");
+  std::cout << "HERE at line 315" << std::endl;
   sheet.addSticker(i, 50, 500);
-  output3 = sheet.render();
-  output3.writeToFile("../Outputline308.png");
+  // output3 = sheet.render();
+  // output3.writeToFile("../Outputline308.png");
   sheet.changeMaxStickers(7);
   sheet.removeSticker(1);
   sheet.changeMaxStickers(4);
@@ -319,8 +331,8 @@ TEST_CASE("A Stickersheet with stickers placed beyond base image boundaries work
 
   sheet.removeSticker(0);
 
-  output3 = sheet.render();
-  output3.writeToFile("../Outputline315.png");
+  // output3 = sheet.render();
+  // output3.writeToFile("../Outputline315.png");
 
   REQUIRE( sheet.render() == alma );
 
